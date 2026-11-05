@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titel %}Statistik{% endblock %}
+{% block inhalt %}
+<h1>Volumen pro Woche</h1>
+<p class="unter">Volumen = Gewicht × Wiederholungen, summiert pro ISO-Kalenderwoche. Neueste Woche zuerst.</p>
+
+<form class="leiste" method="get">
+  <label>Übung
+    <select name="uebung">
+      <option value="">Alle Übungen</option>
+      {% for u in uebungen %}<option {{ 'selected' if u.lower() == uebung.lower() }}>{{ u }}</option>{% endfor %}
+    </select></label>
+  <button type="submit">Anzeigen</button>
+</form>
+
+{% if not hat_trainings %}
+<div class="leer">Noch keine Trainings erfasst. <a href="{{ url_for('main.training_neu') }}">Training erfassen</a></div>
+{% elif not wochen %}
+<div class="leer">Für «{{ uebung }}» gibt es keine Sätze.</div>
+{% else %}
+<div class="tabelle-wrap"><table>
+  <thead><tr><th>Woche</th><th class="zahl">Trainings</th><th class="zahl">Volumen (kg)</th><th class="zahl">Ø pro Training</th><th class="balken-zelle" aria-label="Verlauf"></th></tr></thead>
+  <tbody>
+  {% for w in wochen %}
+    <tr>
+      <td>KW {{ w.kw }} / {{ w.jahr }}</td>
+      <td class="zahl">{{ w.anzahl_trainings }}</td>
+      <td class="zahl">{{ w.volumen | kg }}</td>
+      <td class="zahl">{{ w.durchschnitt | kg }}</td>
+      <td class="balken-zelle"><div class="balken {{ 'top' if w.volumen == maximum }}" style="width: {{ balken(w.volumen, maximum) }}%"></div></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% endif %}
+{% endblock %}

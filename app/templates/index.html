@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titel %}Start{% endblock %}
+{% block inhalt %}
+<h1>Dein Trainingslog</h1>
+<p class="unter">{{ anzahl }} Trainings erfasst.</p>
+<p><a class="knopf" href="{{ url_for('main.training_neu') }}">Training erfassen</a></p>
+
+<h2>Letzte Trainings</h2>
+{% if letzte %}
+<div class="tabelle-wrap"><table>
+  <thead><tr><th>Datum</th><th>Übungen</th><th class="zahl">Sätze</th><th class="zahl">Volumen (kg)</th></tr></thead>
+  <tbody>
+  {% for t in letzte %}
+    <tr>
+      <td>{{ t.datum.strftime('%d.%m.%Y') }}</td>
+      <td>{{ t.saetze | map(attribute='uebung') | unique | join(', ') }}</td>
+      <td class="zahl">{{ t.saetze | length }}</td>
+      <td class="zahl">{{ volumen(t) | kg }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% else %}
+<div class="leer">Noch keine Trainings erfasst. Erfasse dein erstes Training oder importiere eine CSV-Datei.</div>
+{% endif %}
+{% endblock %}

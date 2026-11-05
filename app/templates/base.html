@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titel %}Trainingslog{% endblock %} – Trainingslog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="kopf">
+  <div class="kopf-innen">
+    <a class="marke" href="{{ url_for('main.index') }}">Training<span>slog</span></a>
+    <nav>
+      {% set ep = request.endpoint %}
+      <a href="{{ url_for('main.trainings') }}" class="{{ 'aktiv' if ep == 'main.trainings' }}">Trainings</a>
+      <a href="{{ url_for('main.training_neu') }}" class="{{ 'aktiv' if ep == 'main.training_neu' }}">Training erfassen</a>
+      <a href="{{ url_for('main.statistik') }}" class="{{ 'aktiv' if ep == 'main.statistik' }}">Statistik</a>
+      <a href="{{ url_for('main.bestenliste') }}" class="{{ 'aktiv' if ep == 'main.bestenliste' }}">Bestenliste</a>
+      <a href="{{ url_for('main.import_csv') }}" class="{{ 'aktiv' if ep == 'main.import_csv' }}">Import / Export</a>
+    </nav>
+  </div>
+</header>
+<main>
+  {% for m in get_flashed_messages() %}<div class="meldung">{{ m }}</div>{% endfor %}
+  {% block inhalt %}{% endblock %}
+</main>
+</body>
+</html>

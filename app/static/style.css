@@ -1,0 +1,86 @@
+/* Trainingslog – Farben angelehnt an Hantelscheiben (rot 25 kg, blau 20 kg, gelb 15 kg) */
+:root {
+  --kreide: #edefee;
+  --flaeche: #ffffff;
+  --eisen: #1f2428;
+  --stahl: #5e6a73;
+  --linie: #cfd4d6;
+  --rot: #c62e26;
+  --blau: #1f5fae;
+  --gelb: #e3b023;
+  --fehler-bg: #fbe9e7;
+  --ok-bg: #e6f0e6;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--kreide); color: var(--eisen);
+  font: 16px/1.5 "Barlow", "Segoe UI", system-ui, sans-serif;
+}
+h1, h2, .marke {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-weight: 700; letter-spacing: .01em; line-height: 1.1;
+}
+h1 { font-size: 2.4rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.5rem; margin: 2rem 0 .75rem; }
+a { color: var(--blau); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--gelb); outline-offset: 2px;
+}
+
+.kopf { background: var(--eisen); color: var(--kreide); }
+.kopf-innen { max-width: 980px; margin: 0 auto; padding: .75rem 1.25rem;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.5rem; }
+.marke { font-size: 1.6rem; color: #fff; text-decoration: none; }
+.marke span { color: var(--rot); }
+nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
+nav a { color: var(--kreide); text-decoration: none; padding: .2rem 0;
+  border-bottom: 3px solid transparent; }
+nav a:hover { border-bottom-color: var(--stahl); }
+nav a.aktiv { border-bottom-color: var(--rot); }
+
+main { max-width: 980px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+.unter { color: var(--stahl); margin: 0 0 1.5rem; }
+
+.meldung { padding: .75rem 1rem; border-left: 4px solid var(--blau); background: var(--flaeche); margin-bottom: 1rem; }
+.fehler { border-left: 4px solid var(--rot); background: var(--fehler-bg); padding: .75rem 1rem; margin-bottom: 1rem; }
+.fehler ul { margin: .25rem 0 0; padding-left: 1.2rem; }
+.leer { background: var(--flaeche); padding: 1.5rem; border: 1px dashed var(--linie); }
+
+table { width: 100%; border-collapse: collapse; background: var(--flaeche); }
+th, td { text-align: left; padding: .55rem .75rem; border-bottom: 1px solid var(--linie); vertical-align: top; }
+th { font-size: .85rem; color: var(--stahl); font-weight: 600; }
+td.zahl, th.zahl { text-align: right; font-variant-numeric: tabular-nums; }
+.tabelle-wrap { overflow-x: auto; }
+
+form.leiste { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end;
+  background: var(--flaeche); padding: 1rem; margin-bottom: 1rem; }
+label { display: flex; flex-direction: column; font-size: .85rem; color: var(--stahl); gap: .2rem; }
+input, select { font: inherit; padding: .4rem .5rem; border: 1px solid var(--linie);
+  border-radius: 3px; background: #fff; color: var(--eisen); }
+button, .knopf { font: inherit; font-weight: 600; padding: .45rem 1rem; border: 0; border-radius: 3px;
+  background: var(--rot); color: #fff; cursor: pointer; text-decoration: none; display: inline-block; }
+button.leise, .knopf.leise { background: transparent; color: var(--eisen); border: 1px solid var(--stahl); }
+
+.satz-raster { display: grid; grid-template-columns: 2.5rem 1fr 7rem 7rem; gap: .5rem; align-items: center;
+  background: var(--flaeche); padding: 1rem; }
+.satz-raster .nr { color: var(--stahl); text-align: right; font-variant-numeric: tabular-nums; }
+.satz-raster .kopfzeile { font-size: .85rem; color: var(--stahl); }
+
+.summe { margin-top: .75rem; font-weight: 600; }
+
+/* Statistik-Balken: die eine auffällige Stelle */
+.balken-zelle { width: 45%; }
+.balken { height: 1.1rem; background: var(--blau); border-radius: 2px; min-width: 2px; }
+.balken.top { background: var(--rot); }
+
+.rang-1 td:first-child { box-shadow: inset 6px 0 0 var(--gelb); font-weight: 700; }
+
+.zahlen { display: flex; flex-wrap: wrap; gap: 2rem; margin: 0 0 1.5rem; }
+.zahlen div { font-size: .9rem; color: var(--stahl); }
+.zahlen strong { display: block; font-family: "Barlow Condensed", sans-serif; font-size: 2rem; color: var(--eisen); }
+
+@media (max-width: 600px) {
+  .satz-raster { grid-template-columns: 1.5rem 1fr 4.5rem 4.5rem; padding: .75rem; }
+  h1 { font-size: 2rem; }
+}
+input[type="date"] { max-width: 12rem; }

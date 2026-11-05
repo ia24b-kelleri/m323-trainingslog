@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titel %}Bestenliste{% endblock %}
+{% block inhalt %}
+<h1>Bestenliste</h1>
+<p class="unter">Bester Satz pro Übung nach geschätztem Maximalgewicht (1RM, Epley-Formel: Gewicht × (1 + Wdh. / 30)).</p>
+
+{% if liste %}
+<div class="tabelle-wrap"><table>
+  <thead><tr><th class="zahl">Rang</th><th>Übung</th><th class="zahl">Geschätztes 1RM</th><th>Bester Satz</th><th>Datum</th><th class="zahl">Schwerstes Gewicht</th></tr></thead>
+  <tbody>
+  {% for b in liste %}
+    <tr class="{{ 'rang-1' if loop.first }}">
+      <td class="zahl">{{ loop.index }}</td>
+      <td>{{ b.uebung }}</td>
+      <td class="zahl">{{ b.geschaetztes_1rm | kg }} kg</td>
+      <td>{{ b.gewicht | kg }} kg × {{ b.wiederholungen }}</td>
+      <td>{{ b.datum.strftime('%d.%m.%Y') }}</td>
+      <td class="zahl">{{ maxima[b.uebung] | kg }} kg</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% else %}
+<div class="leer">Noch keine Sätze vorhanden. <a href="{{ url_for('main.training_neu') }}">Training erfassen</a></div>
+{% endif %}
+{% endblock %}

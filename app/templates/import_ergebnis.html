@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titel %}Import-Ergebnis{% endblock %}
+{% block inhalt %}
+<h1>Import abgeschlossen</h1>
+<div class="zahlen">
+  <div><strong>{{ ergebnis.trainings | length }}</strong>Trainings importiert</div>
+  <div><strong>{{ ergebnis.anzahl_saetze }}</strong>Sätze</div>
+  <div><strong>{{ ergebnis.fehler | length }}</strong>Zeilen übersprungen</div>
+</div>
+
+{% if ergebnis.fehler %}
+<h2>Übersprungene Zeilen</h2>
+<div class="tabelle-wrap"><table>
+  <thead><tr><th class="zahl">Zeile</th><th>Grund</th></tr></thead>
+  <tbody>{% for f in ergebnis.fehler %}<tr><td class="zahl">{{ f.zeile }}</td><td>{{ f.grund }}</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endif %}
+<p><a class="knopf" href="{{ url_for('main.trainings') }}">Zu den Trainings</a>
+   <a class="knopf leise" href="{{ url_for('main.import_csv') }}">Weitere Datei importieren</a></p>
+{% endblock %}

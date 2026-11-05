@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titel %}Training erfassen{% endblock %}
+{% block inhalt %}
+<h1>Training erfassen</h1>
+<p class="unter">Leere Zeilen werden ignoriert. Gewicht mit Punkt oder Komma, z. B. 82,5.</p>
+
+{% if fehler %}
+<div class="fehler" role="alert"><strong>Training nicht gespeichert:</strong>
+  <ul>{% for f in fehler %}<li>{{ f }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<form method="post">
+  <p><label>Datum
+    <input type="date" name="datum" required value="{{ form.get('datum', '') }}"></label></p>
+
+  <div class="satz-raster">
+    <span></span><span class="kopfzeile">Übung</span><span class="kopfzeile">Gewicht (kg)</span><span class="kopfzeile">Wdh.</span>
+    {% for i in range(zeilen) %}
+      <span class="nr">{{ i + 1 }}</span>
+      <input name="uebung_{{ i }}" list="uebungen" aria-label="Übung Satz {{ i + 1 }}" value="{{ form.get('uebung_' ~ i, '') }}">
+      <input name="gewicht_{{ i }}" inputmode="decimal" aria-label="Gewicht Satz {{ i + 1 }}" value="{{ form.get('gewicht_' ~ i, '') }}">
+      <input name="wdh_{{ i }}" inputmode="numeric" aria-label="Wiederholungen Satz {{ i + 1 }}" value="{{ form.get('wdh_' ~ i, '') }}">
+    {% endfor %}
+  </div>
+  <datalist id="uebungen">
+    <option>Bankdrücken</option><option>Kniebeugen</option><option>Kreuzheben</option>
+    <option>Rudern</option><option>Schulterdrücken</option><option>Klimmzüge</option>
+  </datalist>
+  <p><button type="submit">Training speichern</button></p>
+</form>
+{% endblock %}

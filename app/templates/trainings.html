@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titel %}Trainings{% endblock %}
+{% block inhalt %}
+<h1>Trainings</h1>
+<p class="unter">{{ ergebnis.trainings | length }} von {{ anzahl_total }} Trainings.</p>
+
+<form class="leiste" method="get">
+  <label>Übung
+    <select name="uebung">
+      <option value="">Alle Übungen</option>
+      {% for u in uebungen %}<option {{ 'selected' if u.lower() == p.uebung.lower() }}>{{ u }}</option>{% endfor %}
+    </select></label>
+  <label>Von <input type="date" name="von" value="{{ p.von or '' }}"></label>
+  <label>Bis <input type="date" name="bis" value="{{ p.bis or '' }}"></label>
+  <label>Sortierung
+    <select name="sort">
+      {% for key, s in sortierungen.items() %}<option value="{{ key }}" {{ 'selected' if key == p.sort }}>{{ s.bezeichnung }}</option>{% endfor %}
+    </select></label>
+  <button type="submit">Filtern</button>
+  <a class="knopf leise" href="{{ url_for('main.trainings') }}">Zurücksetzen</a>
+</form>
+
+{% if ergebnis.trainings %}
+<div class="tabelle-wrap"><table>
+  <thead><tr><th>Datum</th><th>Sätze</th><th class="zahl">Volumen (kg)</th></tr></thead>
+  <tbody>
+  {% for t, v in zeilen %}
+    <tr>
+      <td>{{ t.datum.strftime('%d.%m.%Y') }}</td>
+      <td>{% for s in t.saetze %}{{ s.uebung }} {{ s.gewicht | kg }} kg × {{ s.wiederholungen }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
+      <td class="zahl">{{ v | kg }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+<p class="summe">Gesamtvolumen der Treffer: {{ ergebnis.gesamtvolumen | kg }} kg</p>
+{% else %}
+<div class="leer">Keine Trainings gefunden. Passe die Filter an oder <a href="{{ url_for('main.training_neu') }}">erfasse ein Training</a>.</div>
+{% endif %}
+{% endblock %}

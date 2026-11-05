@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block titel %}Import / Export{% endblock %}
+{% block inhalt %}
+<h1>Import / Export</h1>
+
+<h2>CSV importieren</h2>
+<p>Erwartetes Format (Komma oder Semikolon getrennt, erste Zeile ist die Kopfzeile):</p>
+<pre>datum,uebung,gewicht,wiederholungen
+2026-11-02,Bankdrücken,82.5,8</pre>
+<form class="leiste" method="post" enctype="multipart/form-data">
+  <label>CSV-Datei <input type="file" name="datei" accept=".csv,text/csv"></label>
+  <button type="submit">Importieren</button>
+</form>
+<p class="unter">Ungültige Zeilen werden übersprungen und mit Grund aufgelistet. Sätze mit gleichem Datum werden zu einem Training zusammengefasst.</p>
+
+<h2>CSV exportieren</h2>
+<p><a class="knopf leise" href="{{ url_for('main.export') }}">Alle Trainings als CSV herunterladen</a></p>
+{% endblock %}
