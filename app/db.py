@@ -6,6 +6,8 @@ Die Business-Logik liegt als pure functions in app/services/.
 import sqlite3
 from contextlib import closing
 from datetime import date
+from itertools import groupby
+from operator import itemgetter
 from pathlib import Path
 
 from app.models import Satz, Training
@@ -22,6 +24,7 @@ CREATE TABLE IF NOT EXISTS satz (
     gewicht        REAL    NOT NULL,
     wiederholungen INTEGER NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_satz_training ON satz(training_id, id);
 """
 
 
@@ -63,24 +66,20 @@ def loesche_alle(db_path: str) -> None:
 def lade_trainings(db_path: str) -> tuple[Training, ...]:
     """Lädt alle Trainings, aufsteigend nach Datum sortiert.
 
-    STAND VORHER (für D1): imperatives Gruppieren mit setdefault + append
-    in einer for-Schleife, danach Liste mutieren (sort).
+    STAND NACHHER (D1): deklarativ. Die DB sortiert die Sätze nach training_id,
+    groupby fasst sie zusammen, eine Dict-Comprehension baut die Zuordnung.
+    Keine append/sort-Mutation mehr, der Index beschleunigt ORDER BY training_id.
     """
     with closing(sqlite3.connect(db_path)) as con:
-        training_rows = con.execute("SELECT id, datum FROM training").fetchall()
+        training_rows = con.execute(
+            "SELECT id, datum FROM training ORDER BY datum, id").fetchall()
         satz_rows = con.execute(
-            "SELECT training_id, uebung, gewicht, wiederholungen FROM satz ORDER BY id"
-        ).fetchall()
+            "SELECT training_id, uebung, gewicht, wiederholungen FROM satz "
+            "ORDER BY training_id, id").fetchall()
 
-    saetze_pro_training = {}
-    for training_id, uebung, gewicht, wiederholungen in satz_rows:
-        saetze_pro_training.setdefault(training_id, []).append(
-            Satz(uebung, gewicht, wiederholungen))
-
-    trainings = []
-    for training_id, datum in training_rows:
-        saetze = tuple(saetze_pro_training.get(training_id, []))
-        trainings.append(Training(date.fromisoformat(datum), saetze, training_id))
-
-    trainings.sort(key=lambda t: (t.datum, t.id))
-    return tuple(trainings)
+    saetze_pro_training = {
+        training_id: tuple(Satz(uebung, gewicht, wdh) for _, uebung, gewicht, wdh in gruppe)
+        for training_id, gruppe in groupby(satz_rows, key=itemgetter(0))
+    }
+    return tuple(Training(date.fromisoformat(datum), saetze_pro_training.get(tid, ()), tid)
+                 for tid, datum in training_rows)
