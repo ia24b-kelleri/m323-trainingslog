@@ -6,6 +6,7 @@ from flask import (Blueprint, Response, current_app, flash, redirect,
 
 from app.db import lade_trainings, speichere_training, speichere_trainings
 from app.services.bestenliste import bestenliste as berechne_bestenliste
+from app.services.csv_export import exportiere_csv
 from app.services.csv_import import importiere_csv
 from app.services.erfassen import ANZAHL_ZEILEN, parse_formular
 from app.services.filter import (SORTIERUNGEN, alle_uebungen,
@@ -78,18 +79,7 @@ def import_csv():
 
 @bp.get("/export")
 def export():
-    # STAND VORHER (für B1A / D1): bewusst imperativ direkt in der Route.
-    trainings = lade_trainings(db())
-    zeilen = []
-    zeilen.append("datum,uebung,gewicht,wiederholungen")
-    for training in trainings:
-        for satz in training.saetze:
-            zeile = (str(training.datum) + "," + satz.uebung + ","
-                     + str(satz.gewicht) + "," + str(satz.wiederholungen))
-            zeilen.append(zeile)
-    inhalt = ""
-    for zeile in zeilen:
-        inhalt = inhalt + zeile + "\n"
+    inhalt = exportiere_csv(lade_trainings(db()))
     return Response(inhalt, mimetype="text/csv",
                     headers={"Content-Disposition": "attachment; filename=trainings.csv"})
 
