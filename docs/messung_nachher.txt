@@ -1,0 +1,7 @@
+Messung Trainingslog – Python 3.12.5, Windows
+Bester von 5 Läufen, Angaben in ms
+
+ Trainings    Sätze   lade_trainings   bestenliste
+       500     6954             15.3           1.9
+      2000    27752             69.4           7.6
+      5000    69818            178.1          19.2
